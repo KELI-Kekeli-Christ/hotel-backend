@@ -45,7 +45,7 @@ class ReservationController extends Controller
 
         try {
             // Vérifier que l'utilisateur fait une réservation pour lui-même ou est admin
-            if ($validated['user_id'] != Auth::id() && !Auth::user()->is_admin) {
+            if ($validated['user_id'] != Auth::id() || !Auth::user()->is_admin) {
                 return response()->json(['message' => 'Vous ne pouvez pas réserver pour un autre utilisateur'], 403);
             }
 
@@ -134,7 +134,7 @@ class ReservationController extends Controller
         $reservation = Reservation::with(['user', 'chambre'])->findOrFail($id);
         
         // Seul l'utilisateur concerné ou un admin peut voir la réservation
-        if ($reservation->user_id != Auth::id() && !Auth::user()->is_admin) {
+        if ($reservation->user_id != Auth::id() || !Auth::user()->is_admin) {
             return response()->json(['message' => 'Accès non autorisé'], 403);
         }
 
